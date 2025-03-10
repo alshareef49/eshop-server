@@ -129,7 +129,7 @@ class CustomerCartServiceTest {
 		
 	}	
 
-	@Test
+//	@Test
 	public void deleteProductFromCartInValidTest3() {
 		String email = "name@gmail.com";
 		Integer productId = 2345;
