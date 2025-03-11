@@ -81,17 +81,17 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	
-	// Get the customer detail by using the emailId from repository
-    // If not found, throw EKartException with message
-    // CustomerService.CUSTOMER_NOT_FOUND
-    // else return the customer details
-	
 	@Override
 	public CustomerDTO getCustomerByEmailId(String emailId) throws EShopException {
-
-		// write your logic here
-		return null;
-
+		Optional<Customer> optionalCustomer = customerRepository.findById(emailId.toLowerCase());
+		Customer customer = optionalCustomer
+				.orElseThrow(() -> new EShopException("CustomerService.CUSTOMER_NOT_FOUND"));
+		CustomerDTO customerDTO = new CustomerDTO();
+		customerDTO.setEmailId(customer.getEmailId());
+		customerDTO.setName(customer.getName());
+		customerDTO.setPhoneNumber(customer.getPhoneNumber());
+		customerDTO.setAddress(customer.getAddress());
+		return customerDTO;
 	}
 
 }
