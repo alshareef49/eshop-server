@@ -24,6 +24,6 @@ public interface PaymentService {
 	TransactionDTO authenticatePayment(String customerEmailId, TransactionDTO transactionDTO)
 			throws EShopException, NoSuchAlgorithmException;
 
-	List<CardDTO> getCardsOfCustomer(String customerEmailId, String cardType) throws EShopException;
+	List<CardDTO> getCardsOfCustomer(String customerEmailId) throws EShopException;
 
 }

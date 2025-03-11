@@ -32,14 +32,10 @@ public class PaymentServiceImpl implements PaymentService {
 	public Integer addCustomerCard(String customerEmailId, CardDTO cardDTO)
 			throws EShopException, NoSuchAlgorithmException {
 
-//		List<Card> listOfCustomerCards = cardRepository.findByCustomerEmailId(customerEmailId);
-//		if (listOfCustomerCards.isEmpty())
-//			throw new EKartException("PaymentService.CUSTOMER_NOT_FOUND");
 		cardDTO.setHashCvv(HashingUtility.getHashValue(cardDTO.getCvv().toString()));
 		Card newCard = new Card();
 		newCard.setCardID(cardDTO.getCardId());
 		newCard.setNameOnCard(cardDTO.getNameOnCard());
-		;
 		newCard.setCardNumber(cardDTO.getCardNumber());
 		newCard.setCardType(cardDTO.getCardType());
 		newCard.setExpiryDate(cardDTO.getExpiryDate());
@@ -120,17 +116,27 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 
 	
-	// Get the list of card details by using the customerEmailId and cardType
-    // If the obtained list is empty throw EKartException with message
-    // PaymentService.CARD_NOT_FOUND
-    // Else populate the obtained card details and return
-	
 	@Override
-	public List<CardDTO> getCardsOfCustomer(String customerEmailId, String cardType) throws EShopException {
+	public List<CardDTO> getCardsOfCustomer(String customerEmailId) throws EShopException {
+		List<Card> cards = cardRepository.findByCustomerEmailId(customerEmailId);
+		if(cards.isEmpty()){
+			throw new EShopException("PaymentService.CARD_NOT_FOUND");
+		}
 
-		// write your logic here
-		return null;
-		
+		List<CardDTO> cardDTOs = new ArrayList<CardDTO>();
+		for (Card card : cards) {
+			CardDTO cardDTO = new CardDTO();
+			cardDTO.setCardId(card.getCardID());
+			cardDTO.setNameOnCard(card.getNameOnCard());
+			cardDTO.setCardNumber(card.getCardNumber());
+			cardDTO.setCardType(card.getCardType());
+			cardDTO.setHashCvv("XXX");
+			cardDTO.setExpiryDate(card.getExpiryDate());
+			cardDTO.setCustomerEmailId(card.getCustomerEmailId());
+
+			cardDTOs.add(cardDTO);
+		}
+		return cardDTOs;
 	}
 
 	@Override
