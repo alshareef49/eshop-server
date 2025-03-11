@@ -67,12 +67,7 @@ public class CustomerCartServiceImpl implements CustomerCartService {
         }
         return cartId;
     }
-
-
-    //Get the customer cart details by using customerEmailId
-    //If no cart found then throw an EKartException with message "CustomerCartService.NO_CART_FOUND"
-    //Else if cart is empty then throw an EKartException with message "CustomerCartService.NO_PRODUCT_ADDED_TO_CART"
-    //Otherwise return the set of cart products
+    
 
     @Override
     public Set<CartProductDTO> getProductsFromCart(String customerEmailId) throws EShopException {
