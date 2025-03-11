@@ -82,15 +82,22 @@ public class CustomerCartServiceImpl implements CustomerCartService {
     }
 
 
-    //Get the customer cart details by using customerEmailId
-    //If no cart found then throw an EKartException with message "CustomerCartService.NO_CART_FOUND"
-    //Else if cart is empty then throw an EKartException with message "CustomerCartService.NO_PRODUCT_ADDED_TO_CART"
-    //Otherwise delete the given product from the customer cart
-
     @Override
     public void deleteProductFromCart(String customerEmailId, Integer productId) throws EShopException {
+        Optional<CustomerCart> cartOptional = customerCartRepository.findByCustomerEmailId(customerEmailId);
+        CustomerCart cart = cartOptional.orElseThrow(() -> new EShopException("CustomerCartService.NO_CART_FOUND"));
 
-        // write your logic here
+        if (cart.getCartProducts().isEmpty()) {
+            throw new EShopException("CustomerCartService.NO_PRODUCT_ADDED_TO_CART");
+        }
+
+        for (CartProduct cartProduct : cart.getCartProducts()) {
+            if (cartProduct.getCartProductId().equals(productId)) {
+                cart.getCartProducts().remove(cartProduct);
+                cartProductRepository.deleteById(productId);
+                break;
+            }
+        }
 
     }
 
