@@ -1,5 +1,6 @@
 package com.eshop.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,15 +22,22 @@ public class CustomerProductServiceImpl implements CustomerProductService {
 	private ProductRepository productRepository;
 
 	
-	// Get all the product details from the database
-    // And return the same
-	
 	@Override
 	public List<ProductDTO> getAllProducts() throws EShopException {
-		
-		// write your logic here
-		return null;
-		
+		List<Product> products = (List<Product>) productRepository.findAll();
+		List<ProductDTO> productDTOs = new ArrayList<>();
+		for(Product product : products) {
+			ProductDTO productDTO = new ProductDTO();
+			productDTO.setBrand(product.getBrand());
+			productDTO.setCategory(product.getCategory());
+			productDTO.setDescription(product.getDescription());
+			productDTO.setName(product.getName());
+			productDTO.setPrice(product.getPrice());
+			productDTO.setProductId(product.getProductId());
+			productDTO.setAvailableQuantity(product.getAvailableQuantity());
+            productDTOs.add(productDTO);
+		}
+		return productDTOs;
 	}
 
 	@Override
