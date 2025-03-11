@@ -37,17 +37,12 @@ public class CartAPI {
     Log logger = LogFactory.getLog(CartAPI.class);
 
 
-    // Add product to customer cart by calling addProductToCart() method of
-    // CustomerCartService which in turn return the cartId
-    // Set the appropriate success message with cartId and return the same
-
     @PostMapping(value = "/products")
     public ResponseEntity<String> addProductToCart(@Valid @RequestBody CustomerCartDTO customerCartDTO)
             throws EShopException {
-
-        // write your logic here
-        return null;
-
+        int cartId = customerCartService.addProductToCart(customerCartDTO);
+        String message = environment.getProperty("CustomerCartAPI.PRODUCT_ADDED_TO_CART_SUCCESS")+cartId;
+        return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
     @GetMapping(value = "/customer/{customerEmailId}/products")
@@ -71,18 +66,14 @@ public class CartAPI {
     }
 
 
-    // Delete the product details from the cart of customer by calling
-    // deleteProductFromCart() method of CustomerCartService
-    // Set the appropriate success or failure message and return the same
-
     @DeleteMapping(value = "/customer/{customerEmailId}/product/{productId}")
     public ResponseEntity<String> deleteProductFromCart(
             @Pattern(regexp = "[a-zA-Z0-9._]+@[a-zA-Z]{2,}\\.[a-zA-Z][a-zA-Z.]+", message = "{invalid.customeremail.format}") @PathVariable("customerEmailId") String customerEmailId,
             @NotNull(message = "{invalid.email.format}") @PathVariable("productId") Integer productId)
             throws EShopException {
-
-        // write your logic here
-        return null;
+        customerCartService.deleteProductFromCart(customerEmailId,productId);
+        String message = environment.getProperty("CustomerCartAPI.PRODUCT_DELETED_FROM_CART_SUCCESS");
+        return new ResponseEntity<>(message, HttpStatus.OK);
 
     }
 
