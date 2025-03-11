@@ -1,4 +1,4 @@
-package com.eshop.api;
+package com.eshop.controller;
 
 import java.util.ArrayList;
 import java.util.List;

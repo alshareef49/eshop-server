@@ -1,4 +1,4 @@
-package com.eshop.api;
+package com.eshop.controller;
 
 import java.util.Set;
 
@@ -60,7 +60,7 @@ public class CartAPI {
         for (CartProductDTO cartProductDTO : cartProductDTOs) {
             logger.info("Product call");
             ProductDTO productDTO = template.getForEntity(
-                    "http://localhost:3333/Ekart/product-api/product/" + cartProductDTO.getProduct().getProductId(),
+                    "http://localhost:3333/EShop/product-api/product/" + cartProductDTO.getProduct().getProductId(),
                     ProductDTO.class).getBody();
             cartProductDTO.setProduct(productDTO);
             logger.info("Product complete");

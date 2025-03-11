@@ -1,4 +1,4 @@
-package com.eshop.api;
+package com.eshop.controller;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
