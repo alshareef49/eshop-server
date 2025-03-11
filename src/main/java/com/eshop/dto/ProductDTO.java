@@ -24,8 +24,6 @@ public class ProductDTO {
 	private Double discount;
 	@Min(value = 1, message = "{product.invalid.quantity}")
 	private Integer quantity;
-	private String errorMessage;
-	private String successMessage;
 	private String sellerEmailId;
 	private Integer availableQuantity;
 

@@ -26,14 +26,12 @@ public class ProductAPI {
 	Log logger = LogFactory.getLog(ProductAPI.class);
 
 	
-	// Get all the product details by calling getAllProducts() of
-    // CustomerProductService and return the same
-	
 	@GetMapping(value = "/products")
 	public ResponseEntity<List<ProductDTO>> getAllProducts() throws EShopException {
-		
-		// write your logic here
-		return null;
+
+		logger.info("Received a request to get all products");
+		List<ProductDTO> products = customerProductService.getAllProducts();
+		return new ResponseEntity<>(products, HttpStatus.OK);
 
 	}
 
