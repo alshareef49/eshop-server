@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.eshop.dto.CartProductDTO;
 import com.eshop.dto.CustomerCartDTO;
+import com.eshop.dto.ProductDTO;
 import com.eshop.entity.CartProduct;
 import com.eshop.entity.CustomerCart;
 import com.eshop.exception.EShopException;
@@ -76,8 +77,25 @@ public class CustomerCartServiceImpl implements CustomerCartService {
     @Override
     public Set<CartProductDTO> getProductsFromCart(String customerEmailId) throws EShopException {
 
-        // write your logic here
-        return null;
+        Optional<CustomerCart> cartOptional = customerCartRepository.findByCustomerEmailId(customerEmailId);
+        CustomerCart cart = cartOptional.orElseThrow(() -> new EShopException("CustomerCartService.NO_CART_FOUND"));
+
+        if (cart.getCartProducts().isEmpty()) {
+            throw new EShopException("CustomerCartService.NO_PRODUCT_ADDED_TO_CART");
+        }
+
+        Set<CartProductDTO> cartProductDTOs = new HashSet<>();
+        for (CartProduct cartProduct : cart.getCartProducts()) {
+            CartProductDTO cartProductDTO = new CartProductDTO();
+            cartProductDTO.setCartProductId(cartProduct.getCartProductId());
+            cartProductDTO.setQuantity(cartProduct.getQuantity());
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setProductId(cartProduct.getProductId());
+            cartProductDTO.setProduct(productDTO);
+            cartProductDTOs.add(cartProductDTO);
+        }
+
+        return cartProductDTOs;
 
     }
 
