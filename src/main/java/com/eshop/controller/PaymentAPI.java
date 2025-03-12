@@ -8,6 +8,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -76,18 +77,17 @@ public class PaymentAPI {
 	}
 
 	
-	// Get the customer cards details by calling getCustomerCardOfCardType()
-    // method of PaymentService() and return the list of card details obtained
-	
+
 	@GetMapping(value = "/customer/{customerEmailId}/card-type/{cardType}")
 	public ResponseEntity<List<CardDTO>> getCardsOfCustomer(@PathVariable String customerEmailId,
 			@PathVariable String cardType) throws EShopException {
 		logger.info("Recieved request to fetch  cards of customer : " + customerEmailId + " having card type as: "
 				+ cardType);
 
-		// write your logic here
-		return null;
-		
+		List<CardDTO> cardDTOs = paymentService.getCustomerCardOfCardType(customerEmailId, cardType);
+
+		return new ResponseEntity<List<CardDTO>>(cardDTOs, HttpStatus.OK);
+
 	}
 
 	
