@@ -54,7 +54,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 		}
 
 		order.setOrderStatus(OrderStatus.PLACED);
-		Double price = 0.0;
+		double price = 0.0;
 		List<OrderedProduct> orderedProducts = new ArrayList<OrderedProduct>();
 
 		for (OrderedProductDTO orderedProductDTO : orderDTO.getOrderedProducts()) {

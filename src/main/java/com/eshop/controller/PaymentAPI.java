@@ -1,8 +1,11 @@
 package com.eshop.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import com.eshop.dto.OrderDTO;
+import com.eshop.dto.TransactionDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,25 +94,30 @@ public class PaymentAPI {
 	}
 
 	
-	// Get the order details of Customer for the given orderId by calling respective
-    // API
-    // Update the Transaction details with the obtained Order details in above step,
-    // along with transaction date and total price
-    // Authenticate the transaction details for the given customer by calling
-    // authenticatePayment() method of PaymentService
-    // Add the transaction details to the database by calling addTransaction()
-    // method of PaymentService
-    // Update the order status by calling by calling respective API
-    // Set the appropriate success message and return the same
-	
 	@PostMapping(value = "/customer/{customerEmailId}/order/{orderId}")
 	public ResponseEntity<String> payForOrder(
 			@Pattern(regexp = "[a-zA-Z0-9._]+@[a-zA-Z]{2,}\\.[a-zA-Z][a-zA-Z.]+", message = "{invalid.email.format}") @PathVariable("customerEmailId") String customerEmailId,
 			@NotNull(message = "{orderId.absent") @PathVariable("orderId") Integer orderId,
 			@Valid @RequestBody CardDTO cardDTO) throws NoSuchAlgorithmException, EShopException {
 		
-		// write your logic here
-		return null;
+		logger.info("Recieved request to pay for order : " + orderId + " of customer : " + customerEmailId);
+
+		ResponseEntity<OrderDTO> orderResponse = template.getForEntity("http://localhost:3333/EShop/order-api/order/" + orderId, OrderDTO.class);
+		OrderDTO orderDTO = orderResponse.getBody();
+
+		TransactionDTO transactionDTO = new TransactionDTO();
+		transactionDTO.setOrder(orderDTO);
+		transactionDTO.setCard(cardDTO);
+        assert orderDTO != null;
+        transactionDTO.setTotalPrice(orderDTO.getTotalPrice());
+		transactionDTO.setTransactionDate(LocalDateTime.now());
+		paymentService.authenticatePayment(customerEmailId,transactionDTO);
+		int txnId = paymentService.addTransaction(transactionDTO);
+
+		template.put("http://localhost:3333/EShop/order-api/order/"+orderId+"/update/order-status",transactionDTO.getTransactionStatus().toString());
+		String message = environment.getProperty("PaymentAPI.TRANSACTION_SUCCESSFULL_ONE")+orderDTO.getTotalPrice()+" "
+				+environment.getProperty("PaymentAPI.TRANSACTION_SUCCESSFULL_TWO")+" "+orderId+environment.getProperty("PaymentAPI.TRANSACTION_SUCCESSFULL_THREE")+txnId;
+		return new ResponseEntity<>(message,HttpStatus.OK);
 
 	}
 
