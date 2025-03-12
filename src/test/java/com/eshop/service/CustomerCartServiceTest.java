@@ -11,13 +11,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.eshop.entity.CartProduct;
-import com.eshop.entity.CustomerCart;
+import com.eshop.models.CartProduct;
+import com.eshop.models.CustomerCart;
 import com.eshop.exception.EShopException;
 import com.eshop.repository.CartProductRepository;
 import com.eshop.repository.CustomerCartRepository;
-import com.eshop.service.CustomerCartService;
-import com.eshop.service.CustomerCartServiceImpl;
 
 @SpringBootTest
 class CustomerCartServiceTest {

@@ -1,4 +1,4 @@
-package com.eshop.entity;
+package com.eshop.models;
 
 import java.util.Set;
 

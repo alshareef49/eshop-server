@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.eshop.entity.Card;
+import com.eshop.models.Card;
 
 public interface CardRepository extends CrudRepository<Card, Integer> {
 

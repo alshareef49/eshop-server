@@ -3,7 +3,7 @@ package com.eshop.service;
 import java.util.Optional;
 
 import com.eshop.dto.CustomerDTO;
-import com.eshop.entity.Customer;
+import com.eshop.models.Customer;
 import com.eshop.exception.EShopException;
 import com.eshop.repository.CustomerRepository;
 import jakarta.transaction.Transactional;

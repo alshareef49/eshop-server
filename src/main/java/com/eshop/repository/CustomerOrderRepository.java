@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
-import com.eshop.entity.Order;
+import com.eshop.models.Order;
 
 public interface CustomerOrderRepository extends CrudRepository<Order, Integer> {
 	List<Order> findByCustomerEmailId(String customerEmailId);
