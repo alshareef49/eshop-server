@@ -17,10 +17,12 @@ import com.eshop.dto.CardDTO;
 import com.eshop.dto.OrderDTO;
 import com.eshop.dto.TransactionDTO;
 import com.eshop.dto.TransactionStatus;
-import com.eshop.models.Card;
+import com.eshop.entity.Card;
 import com.eshop.exception.EShopException;
 import com.eshop.repository.CardRepository;
 import com.eshop.repository.TransactionRepository;
+import com.eshop.service.PaymentService;
+import com.eshop.service.PaymentServiceImpl;
 
 @SpringBootTest
 class CustomerCardsServiceTest {

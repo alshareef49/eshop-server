@@ -10,10 +10,12 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.eshop.dto.ProductDTO;
-import com.eshop.models.Product;
+import com.eshop.entity.Product;
 import com.eshop.exception.EShopException;
 
 import com.eshop.repository.ProductRepository;
+import com.eshop.service.CustomerProductService;
+import com.eshop.service.CustomerProductServiceImpl;
 
 @SpringBootTest
 class CustomerProductServiceTest {
