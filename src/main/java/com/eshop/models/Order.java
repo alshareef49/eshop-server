@@ -1,26 +1,21 @@
 package com.eshop.models;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.eshop.dto.OrderStatus;
 import com.eshop.dto.PaymentThrough;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.proxy.HibernateProxy;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.Data;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
+@RequiredArgsConstructor
 @Entity
-@Table(name = "ORDER")
+@Table(name = "`ORDER`")
 public class Order {
 
 	@Id
@@ -45,8 +40,24 @@ public class Order {
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "orderId")
+	@ToString.Exclude
 	private List<OrderedProduct> orderedProducts;
 
 	private String deliveryAddress;
 
+	@Override
+	public final boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null) return false;
+		Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+		Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+		if (thisEffectiveClass != oEffectiveClass) return false;
+		Order order = (Order) o;
+		return getOrderId() != null && Objects.equals(getOrderId(), order.getOrderId());
+	}
+
+	@Override
+	public final int hashCode() {
+		return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+	}
 }
