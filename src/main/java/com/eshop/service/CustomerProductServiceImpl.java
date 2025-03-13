@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.eshop.dto.ProductDTO;
-import com.eshop.entity.Product;
+import com.eshop.models.Product;
 import com.eshop.exception.EShopException;
 
 import com.eshop.repository.ProductRepository;

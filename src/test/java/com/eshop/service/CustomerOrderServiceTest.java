@@ -18,13 +18,10 @@ import com.eshop.dto.CustomerDTO;
 import com.eshop.dto.OrderDTO;
 import com.eshop.dto.OrderStatus;
 import com.eshop.dto.PaymentThrough;
-import com.eshop.entity.Order;
-import com.eshop.entity.OrderedProduct;
+import com.eshop.models.Order;
+import com.eshop.models.OrderedProduct;
 import com.eshop.exception.EShopException;
 import com.eshop.repository.CustomerOrderRepository;
-import com.eshop.service.CustomerOrderService;
-import com.eshop.service.CustomerOrderServiceImpl;
-import com.eshop.service.CustomerService;
 
 @SpringBootTest
 public class CustomerOrderServiceTest {
