@@ -8,6 +8,7 @@ import com.eshop.exception.EShopException;
 import com.eshop.repository.CustomerRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -35,7 +36,6 @@ public class CustomerServiceImpl implements CustomerService {
 		customerDTO.setNewPassword(customer.getPassword());
 		customerDTO.setAddress(customer.getAddress());
 		return customerDTO;
-
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class CustomerServiceImpl implements CustomerService {
 				Customer customer = new Customer();
 				customer.setEmailId(customerDTO.getEmailId().toLowerCase());
 				customer.setName(customerDTO.getName());
-				customer.setPassword(customerDTO.getPassword());
+				customer.setPassword((new BCryptPasswordEncoder()).encode(customerDTO.getPassword()));
 				customer.setPhoneNumber(customerDTO.getPhoneNumber());
 				customer.setAddress(customerDTO.getAddress());
 				customerRepository.save(customer);

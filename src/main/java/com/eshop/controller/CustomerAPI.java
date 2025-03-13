@@ -1,11 +1,18 @@
 package com.eshop.controller;
 
+import com.eshop.dto.AuthResponse;
+import com.eshop.service.CustomUserDetailsService;
+import com.eshop.utility.JWTUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import com.eshop.dto.CustomerCredDTO;
@@ -21,6 +28,12 @@ import jakarta.validation.constraints.Pattern;
 @RequestMapping(value = "/customer-api")
 public class CustomerAPI {
     @Autowired
+    private JWTUtils jwtUtils;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    private CustomUserDetailsService userDetailsService;
+    @Autowired
     private CustomerService customerService;
     @Autowired
     private Environment environment;
@@ -28,14 +41,20 @@ public class CustomerAPI {
     static Log logger = LogFactory.getLog(CustomerAPI.class);
 
     @PostMapping(value = "/login")
-    public ResponseEntity<CustomerDTO> authenticateCustomer(@Valid @RequestBody CustomerCredDTO custCredDTO)
+    public ResponseEntity<?> authenticateCustomer(@Valid @RequestBody CustomerCredDTO custCredDTO)
             throws EShopException {
 
         logger.info("CUSTOMER TRYING TO LOGIN, VALIDATING CREDENTIALS. CUSTOMER EMAIL ID: " + custCredDTO.getEmailId());
-        CustomerDTO customerDTOFromDB = customerService.authenticateCustomer(custCredDTO.getEmailId(),
-                custCredDTO.getPassword());
-        logger.info("CUSTOMER LOGIN SUCCESS, CUSTOMER EMAIL : " + customerDTOFromDB.getEmailId());
-        return new ResponseEntity<>(customerDTOFromDB, HttpStatus.OK);
+        try {
+            this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(custCredDTO.getEmailId(), custCredDTO.getPassword()));
+        } catch (BadCredentialsException var4) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+
+        UserDetails userDetails = this.userDetailsService.loadUserByUsername(custCredDTO.getEmailId());
+        String token = this.jwtUtils.generateToken(userDetails);
+        logger.info("CUSTOMER LOGIN SUCCESS, CUSTOMER EMAIL : " + custCredDTO.getEmailId());
+        return ResponseEntity.ok(new AuthResponse(token));
     }
 
     @PostMapping(value = "/register")
