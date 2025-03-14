@@ -28,9 +28,11 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/customer-api/**").permitAll()
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/cart-api/**",
+                                "/customer-api/customer/**",
+                                "/order-api/**",
+                                "/product-api/**","/payment-api/**").authenticated()
+                        .anyRequest().permitAll()
                 );
         http.addFilterBefore(authenticationFilterConfig, UsernamePasswordAuthenticationFilter.class);
 
