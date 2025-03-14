@@ -31,7 +31,9 @@ public class SecurityConfig {
                         .requestMatchers("/cart-api/**",
                                 "/customer-api/customer/**",
                                 "/order-api/**",
-                                "/product-api/**","/payment-api/**").authenticated()
+                                "/product-api/product/**",
+                                "/product-api/update/**",
+                                "/payment-api/**").authenticated()
                         .anyRequest().permitAll()
                 );
         http.addFilterBefore(authenticationFilterConfig, UsernamePasswordAuthenticationFilter.class);
