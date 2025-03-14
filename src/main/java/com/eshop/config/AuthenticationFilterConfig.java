@@ -25,9 +25,13 @@ public class AuthenticationFilterConfig extends OncePerRequestFilter {
     @Autowired
     private JWTUtils jwtUtils;
 
+    @Autowired
+    private AuthCodeConfig authCodeConfig;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain) throws ServletException, IOException {
         String authorizationHeader = request.getHeader("Authorization");
+        AuthCodeConfig.TOKEN = authorizationHeader;
         String jwt = null;
         String email = null;
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -42,8 +46,6 @@ public class AuthenticationFilterConfig extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-
         filterChain.doFilter(request, response);
-
     }
 }
