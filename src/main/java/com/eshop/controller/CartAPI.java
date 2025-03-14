@@ -2,12 +2,12 @@ package com.eshop.controller;
 
 import java.util.Set;
 
+import com.eshop.config.AuthCodeConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.client.RestTemplate;
@@ -34,6 +34,9 @@ public class CartAPI {
     @Autowired
     private RestTemplate template;
 
+    @Autowired
+    private AuthCodeConfig authCodeConfig;
+
     Log logger = LogFactory.getLog(CartAPI.class);
 
 
@@ -41,7 +44,7 @@ public class CartAPI {
     public ResponseEntity<String> addProductToCart(@Valid @RequestBody CustomerCartDTO customerCartDTO)
             throws EShopException {
         int cartId = customerCartService.addProductToCart(customerCartDTO);
-        String message = environment.getProperty("CustomerCartAPI.PRODUCT_ADDED_TO_CART_SUCCESS")+cartId;
+        String message = environment.getProperty("CustomerCartAPI.PRODUCT_ADDED_TO_CART_SUCCESS") + cartId;
         return new ResponseEntity<>(message, HttpStatus.OK);
     }
 
@@ -54,8 +57,10 @@ public class CartAPI {
         Set<CartProductDTO> cartProductDTOs = customerCartService.getProductsFromCart(customerEmailId);
         for (CartProductDTO cartProductDTO : cartProductDTOs) {
             logger.info("Product call");
-            ProductDTO productDTO = template.getForEntity(
+            ProductDTO productDTO = template.exchange(
                     "http://localhost:3333/EShop/product-api/product/" + cartProductDTO.getProduct().getProductId(),
+                    HttpMethod.GET,
+                    authCodeConfig.getHeaderEntity(),
                     ProductDTO.class).getBody();
             cartProductDTO.setProduct(productDTO);
             logger.info("Product complete");
@@ -71,7 +76,7 @@ public class CartAPI {
             @Pattern(regexp = "[a-zA-Z0-9._]+@[a-zA-Z]{2,}\\.[a-zA-Z][a-zA-Z.]+", message = "{invalid.customeremail.format}") @PathVariable("customerEmailId") String customerEmailId,
             @NotNull(message = "{invalid.email.format}") @PathVariable("productId") Integer productId)
             throws EShopException {
-        customerCartService.deleteProductFromCart(customerEmailId,productId);
+        customerCartService.deleteProductFromCart(customerEmailId, productId);
         String message = environment.getProperty("CustomerCartAPI.PRODUCT_DELETED_FROM_CART_SUCCESS");
         return new ResponseEntity<>(message, HttpStatus.OK);
 
