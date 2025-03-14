@@ -104,7 +104,10 @@ public class PaymentAPI {
 
         logger.info("Recieved request to pay for order : " + orderId + " of customer : " + customerEmailId);
 
-        ResponseEntity<OrderDTO> orderResponse = template.getForEntity("http://localhost:3333/EShop/order-api/order/" + orderId, OrderDTO.class);
+        ResponseEntity<OrderDTO> orderResponse = template.exchange("http://localhost:3333/EShop/order-api/order/" + orderId,
+                HttpMethod.GET,
+                authCodeConfig.getHeaderEntity(),
+                OrderDTO.class);
         OrderDTO orderDTO = orderResponse.getBody();
 
         TransactionDTO transactionDTO = new TransactionDTO();
