@@ -3,10 +3,10 @@ package com.eshop.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.eshop.config.AuthCodeConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -32,16 +32,23 @@ public class OrderAPI {
     private Environment environment;
     @Autowired
     private RestTemplate template;
+    @Autowired
+    private AuthCodeConfig authCodeConfig;
 
     @PostMapping(value = "/place-order")
     public ResponseEntity<String> placeOrder(@Valid @RequestBody OrderDTO order) throws EShopException {
 
-        ResponseEntity<CartProductDTO[]> cartProductDTOsResponse = template.getForEntity(
+        ResponseEntity<CartProductDTO[]> cartProductDTOsResponse = template.exchange(
                 "http://localhost:3333/EShop/cart-api/customer/" + order.getCustomerEmailId() + "/products",
+                HttpMethod.GET,
+                authCodeConfig.getHeaderEntity(),
                 CartProductDTO[].class);
 
         CartProductDTO[] cartProductDTOs = cartProductDTOsResponse.getBody();
-        template.delete("http://localhost:3333/EShop/cart-api/customer/" + order.getCustomerEmailId() + "/products");
+        template.exchange("http://localhost:3333/EShop/cart-api/customer/" + order.getCustomerEmailId() + "/products",
+                HttpMethod.DELETE,
+                authCodeConfig.getHeaderEntity(),
+                String.class);
         List<OrderedProductDTO> orderedProductDTOs = new ArrayList<>();
 
         assert cartProductDTOs != null;
@@ -65,9 +72,10 @@ public class OrderAPI {
             @NotNull(message = "{orderId.absent}") @PathVariable Integer orderId) throws EShopException {
         OrderDTO orderDTO = orderService.getOrderDetails(orderId);
         for (OrderedProductDTO orderedProductDTO : orderDTO.getOrderedProducts()) {
-
-            ResponseEntity<ProductDTO> productResponse = template.getForEntity(
+            ResponseEntity<ProductDTO> productResponse = template.exchange(
                     "http://localhost:3333/EShop/product-api/product/" + orderedProductDTO.getProduct().getProductId(),
+                    HttpMethod.GET,
+                    authCodeConfig.getHeaderEntity(),
                     ProductDTO.class);
             orderedProductDTO.setProduct(productResponse.getBody());
 
@@ -85,8 +93,11 @@ public class OrderAPI {
             for (OrderedProductDTO orderedProductDTO : orderDTO.getOrderedProducts()) {
 
                 ResponseEntity<ProductDTO> productResponse = template
-                        .getForEntity("http://localhost:3333/EShop/product-api/product/"
-                                + orderedProductDTO.getProduct().getProductId(), ProductDTO.class);
+                        .exchange("http://localhost:3333/EShop/product-api/product/"
+                                + orderedProductDTO.getProduct().getProductId(),
+                                HttpMethod.GET,
+                                authCodeConfig.getHeaderEntity(),
+                                ProductDTO.class);
                 orderedProductDTO.setProduct(productResponse.getBody());
 
             }
@@ -104,9 +115,12 @@ public class OrderAPI {
             OrderDTO orderDTO = orderService.getOrderDetails(orderId);
             for (OrderedProductDTO orderedProductDTO : orderDTO.getOrderedProducts()) {
 
-                template.put("http://localhost:3333/EShop/product-api/update/"
-                        + orderedProductDTO.getProduct().getProductId(), orderedProductDTO.getQuantity());
-
+                template.exchange("http://localhost:3333/EShop/product-api/update/"
+                        + orderedProductDTO.getProduct().getProductId(),
+                        HttpMethod.PUT,
+                        authCodeConfig.getHeaderEntityWithBody(orderedProductDTO.getQuantity()),
+                        String.class
+                );
             }
 
         } else {
