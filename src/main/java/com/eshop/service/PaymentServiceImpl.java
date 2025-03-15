@@ -145,7 +145,7 @@ public class PaymentServiceImpl implements PaymentService {
             throw new EShopException("PaymentService.TRANSACTION_FAILED_CVV_NOT_MATCHING");
         }
         Transaction transaction = new Transaction();
-        transaction.setCardId(transactionDTO.getCard().getCardId());
+        transaction.setCardId(null);
 
         transaction.setOrderId(transactionDTO.getOrder().getOrderId());
         transaction.setTotalPrice(transactionDTO.getTotalPrice());
