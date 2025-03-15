@@ -2,11 +2,13 @@ package com.eshop.controller;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.eshop.config.AuthCodeConfig;
-import com.eshop.dto.OrderDTO;
-import com.eshop.dto.TransactionDTO;
+import com.eshop.dto.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.eshop.dto.CardDTO;
 import com.eshop.exception.EShopException;
 import com.eshop.service.PaymentService;
 
@@ -110,23 +111,27 @@ public class PaymentAPI {
                 OrderDTO.class);
         OrderDTO orderDTO = orderResponse.getBody();
 
-        TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setOrder(orderDTO);
-        transactionDTO.setCard(cardDTO);
-        assert orderDTO != null;
-        transactionDTO.setTotalPrice(orderDTO.getTotalPrice());
-        transactionDTO.setTransactionDate(LocalDateTime.now());
-        paymentService.authenticatePayment(customerEmailId, transactionDTO);
-        int txnId = paymentService.addTransaction(transactionDTO);
+        if (orderDTO == null) {
+            throw new EShopException("OrderService.ORDER_NOT_FOUND");
+        }
+        PaymentProductRequest paymentProductRequest = new PaymentProductRequest();
+        String name = orderDTO.getOrderedProducts().stream()
+                .map(orderedProduct -> orderedProduct.getProduct().getName())
+                .collect(Collectors.joining(", "));
 
-        template.exchange("http://localhost:3333/EShop/order-api/order/" + orderId + "/update/order-status",
-                HttpMethod.PUT,
-                authCodeConfig.getHeaderEntityWithBody(transactionDTO.getTransactionStatus().toString()),
+        long totalQuantity = orderDTO.getOrderedProducts().stream()
+                .mapToInt(OrderedProductDTO::getQuantity)
+                .sum();
+
+        paymentProductRequest.setName(name);
+        paymentProductRequest.setCurrency("INR");
+        paymentProductRequest.setAmount(orderDTO.getTotalPrice().longValue()*100);
+        paymentProductRequest.setQuantity(totalQuantity);
+
+        return template.exchange("http://localhost:8080/product/v1/checkout?orderId=" + orderId,
+                HttpMethod.POST,
+                authCodeConfig.getHeaderEntityWithBody(paymentProductRequest),
                 String.class);
-        String message = environment.getProperty("PaymentAPI.TRANSACTION_SUCCESSFULL_ONE") + orderDTO.getTotalPrice() + " "
-                + environment.getProperty("PaymentAPI.TRANSACTION_SUCCESSFULL_TWO") + " " + orderId + environment.getProperty("PaymentAPI.TRANSACTION_SUCCESSFULL_THREE") + txnId;
-        return new ResponseEntity<>(message, HttpStatus.OK);
-
     }
 
 }
