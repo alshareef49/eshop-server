@@ -52,6 +52,7 @@ public class CustomerServiceImpl implements CustomerService {
 				customer.setPassword((new BCryptPasswordEncoder()).encode(customerDTO.getPassword()));
 				customer.setPhoneNumber(customerDTO.getPhoneNumber());
 				customer.setAddress(customerDTO.getAddress());
+				customer.setRole("ROLE_USER");
 				customerRepository.save(customer);
 				registeredWithEmailId = customer.getEmailId();
 			} else {
@@ -92,6 +93,23 @@ public class CustomerServiceImpl implements CustomerService {
 		customerDTO.setPhoneNumber(customer.getPhoneNumber());
 		customerDTO.setAddress(customer.getAddress());
 		return customerDTO;
+	}
+
+	@Override
+	public void updatePassword(String customerEmailId, String newPassword) throws EShopException {
+		Optional<Customer> optionalCustomer = customerRepository.findById(customerEmailId.toLowerCase());
+		Customer customer = optionalCustomer
+				.orElseThrow(() -> new EShopException("CustomerService.CUSTOMER_NOT_FOUND"));
+		customer.setPassword((new BCryptPasswordEncoder()).encode(newPassword));
+	}
+
+	@Override
+	public void updatePhoneNumber(String customerEmailId, String phoneNumber) throws EShopException {
+		Optional<Customer> optionalCustomer = customerRepository.findById(customerEmailId.toLowerCase());
+		Customer customer = optionalCustomer
+				.orElseThrow(() -> new EShopException("CustomerService.CUSTOMER_NOT_FOUND"));
+		customer.setPhoneNumber(phoneNumber);
+		customerRepository.save(customer);
 	}
 
 }

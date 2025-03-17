@@ -89,4 +89,23 @@ public class CustomerAPI {
 
     }
 
+    @PutMapping(value = "/customer/{customerEmailId:.+}/password/")
+    public ResponseEntity<String> updatePassword(
+            @PathVariable @Pattern(regexp = "[a-zA-Z0-9._]+@[a-zA-Z]{2,}\\.[a-zA-Z][a-zA-Z.]+", message = "{invalid.email.format}") String customerEmailId,
+            @RequestBody String newPassword) throws EShopException {
+
+            customerService.updatePassword(customerEmailId, newPassword);
+            String modificationSuccessMsg = environment.getProperty("CustomerAPI.UPDATE_PASSWORD_SUCCESS");
+            return new ResponseEntity<>(modificationSuccessMsg, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/customer/{customerEmailId:.+}")
+    public ResponseEntity<String> updatePhoneNumber(
+            @PathVariable @Pattern(regexp = "[a-zA-Z0-9._]+@[a-zA-Z]{2,}\\.[a-zA-Z][a-zA-Z.]+", message = "{invalid.email.format}") String customerEmailId,
+            @RequestParam("phoneNumber") String phoneNumber) throws EShopException {
+
+            customerService.updatePhoneNumber(customerEmailId, phoneNumber);
+            String modificationSuccessMsg = environment.getProperty("CustomerAPI.UPDATE_PHONE_NUMBER_SUCCESS");
+            return new ResponseEntity<>(modificationSuccessMsg, HttpStatus.OK);
+            }
 }

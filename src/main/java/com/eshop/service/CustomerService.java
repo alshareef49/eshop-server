@@ -2,6 +2,7 @@ package com.eshop.service;
 
 import com.eshop.dto.CustomerDTO;
 import com.eshop.exception.EShopException;
+import jakarta.validation.constraints.Pattern;
 
 public interface CustomerService {
 
@@ -15,4 +16,7 @@ public interface CustomerService {
 
 	CustomerDTO getCustomerByEmailId(String emailId) throws EShopException;
 
+	void updatePassword(String customerEmailId, String newPassword) throws EShopException;
+
+	void updatePhoneNumber(String customerEmailId, String phoneNumber) throws EShopException;
 }
