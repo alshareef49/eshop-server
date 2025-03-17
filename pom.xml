@@ -174,17 +174,17 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
-<!--                <configuration>-->
-<!--                    <excludes>-->
+                <configuration>
+                    <excludes>
 <!--                        <exclude>com/eshop/api/**</exclude>-->
 <!--                        <exclude>com/eshop/utility/**</exclude>-->
-<!--                        <exclude>com/eshop/dto/**</exclude>-->
-<!--                        <exclude>com/eshop/entity/**</exclude>-->
-<!--                        <exclude>com/eshop/exception/**</exclude>-->
-<!--                        <exclude>com/eshop/repository/**</exclude>-->
-<!--                        <exclude>com/eshop/EShopApplication*</exclude>-->
-<!--                    </excludes>-->
-<!--                </configuration>-->
+                        <exclude>com/eshop/dto/**</exclude>
+                        <exclude>com/eshop/models/**</exclude>
+                        <exclude>com/eshop/exception/**</exclude>
+                        <exclude>com/eshop/repository/**</exclude>
+                        <exclude>com/eshop/EShopApplication*</exclude>
+                    </excludes>
+                </configuration>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
