@@ -1,5 +1,7 @@
 package com.eshop.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
@@ -27,7 +29,18 @@ class CustomerProductServiceTest {
 	@Test
 	void getAllProductsValid() throws EShopException {
 
-		// write your logic here
+		List<Product> products = new ArrayList<>();
+		Product product = new Product();
+		product.setProductId(1005);
+		product.setName("Test Product");
+		product.setBrand("Test Brand");
+		product.setPrice(100.0);
+		products.add(product);
+
+
+
+		Mockito.when(productRepository.findAll()).thenReturn(products);
+		Assertions.assertDoesNotThrow(() -> productService.getAllProducts());
 
 	}
 

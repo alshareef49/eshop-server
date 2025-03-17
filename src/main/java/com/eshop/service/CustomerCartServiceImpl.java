@@ -42,7 +42,7 @@ public class CustomerCartServiceImpl implements CustomerCartService {
                 .findByCustomerEmailId(customerCartDTO.getCustomerEmailId());
         if (cartOptional.isEmpty()) {
             CustomerCart newCart = new CustomerCart();
-            newCart.setCustomerEmailId(customerCartDTO.getCustomerEmailId());
+                newCart.setCustomerEmailId(customerCartDTO.getCustomerEmailId());
             newCart.setCartProducts(cartProducts);
             customerCartRepository.save(newCart);
             cartId = newCart.getCartId();

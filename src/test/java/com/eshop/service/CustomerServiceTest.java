@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,7 +25,6 @@ public class CustomerServiceTest {
 	@InjectMocks
 	private CustomerService customerService = new CustomerServiceImpl();
 
-	//Write testcases here
 
 	@Test
 	void authenticateCustomerValidTest() throws EShopException {
@@ -74,6 +74,19 @@ public class CustomerServiceTest {
 		Mockito.when(customerRepository.findByPhoneNumber(Mockito.anyString())).thenReturn(new ArrayList<Customer>());
 		Assertions.assertEquals(customerDTO.getEmailId(), customerDTO.getEmailId());
 	}
+
+	@Test
+	void registeredNewCustomerValidTest1() throws EShopException {
+		CustomerDTO customerDTO = new CustomerDTO();
+		customerDTO.setEmailId("tom@gmail.com");
+		customerDTO.setAddress("123 Test Street");
+		customerDTO.setNewPassword("Tom@123");
+		customerDTO.setPassword("Tom@123");
+		Mockito.when(customerRepository.findById(Mockito.anyString())).thenReturn(Optional.empty());
+		Mockito.when(customerRepository.findByPhoneNumber(Mockito.anyString())).thenReturn(new ArrayList<Customer>());
+		Assertions.assertDoesNotThrow(() -> customerService.registerNewCustomer(customerDTO));
+	}
+
 
 	@Test
 	void registeredNewCustomerInValidTest() throws EShopException {
@@ -146,15 +159,54 @@ public class CustomerServiceTest {
 	@Test
 	void getCustomerByEmailIdValidTest() throws EShopException {
 
-		// write your logic here
+		Customer customer = new Customer();
+		String customerEmailId = "tom@gmail.com";
+		Mockito.when(customerRepository.findById(Mockito.anyString().toLowerCase())).thenReturn(Optional.of(customer));
+		Assertions.assertDoesNotThrow(()-> customerService.getCustomerByEmailId(customerEmailId));
 
 	}
 
 	@Test
 	void getCustomerByEmailIdInValidTest() throws EShopException {
-
-		// write your logic here
+		Mockito.when(customerRepository.findById(Mockito.anyString())).thenReturn(Optional.empty());
+		Assertions.assertThrows(EShopException.class,()-> customerService.getCustomerByEmailId("test@gmail.com"));
 
 	}
+
+	@Test
+	void updatePassword() {
+		Customer customer = new Customer();
+		String customerEmailId = "tom@gmail.com";
+		String newPassword = "Tom@123";
+		Mockito.when(customerRepository.findById(Mockito.anyString().toLowerCase())).thenReturn(Optional.of(customer));
+		Assertions.assertDoesNotThrow(() -> customerService.updatePassword(customerEmailId, newPassword));
+	}
+	@Test
+	void updatePassword1() {
+		Customer customer = new Customer();
+		String customerEmailId = "tom@gmail.com";
+		String newPassword = "Tom@123";
+		Mockito.when(customerRepository.findById(Mockito.anyString().toLowerCase())).thenReturn(Optional.empty());
+		Assertions.assertThrows(EShopException.class,()-> customerService.updatePassword(customerEmailId, newPassword));
+	}
+
+
+	@Test
+	void updatePhoneNumber() {
+		Customer customer = new Customer();
+		String customerEmailId = "tom@gmail.com";
+		String phoneNumber = "7856780651";
+		Mockito.when(customerRepository.findById(Mockito.anyString().toLowerCase())).thenReturn(Optional.of(customer));
+		Assertions.assertDoesNotThrow(() -> customerService.updatePhoneNumber(customerEmailId, phoneNumber));
+	}
+	@Test
+	void updatePhoneNumber1() {
+		Customer customer = new Customer();
+		String customerEmailId = "tom@gmail.com";
+		String phoneNumber = "7856780651";
+		Mockito.when(customerRepository.findById(Mockito.anyString().toLowerCase())).thenReturn(Optional.empty());
+		Assertions.assertThrows(EShopException.class,()-> customerService.updatePhoneNumber(customerEmailId, phoneNumber));
+	}
+
 
 }
