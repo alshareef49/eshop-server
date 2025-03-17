@@ -23,8 +23,6 @@ public class OrderDTO {
 	@NotNull(message = "{order.paymentthrough.absent}")
 	@Pattern(regexp = "(DEBIT_CARD|CREDIT_CARD)", message = "{order.paymentthrough.invalid}")
 	private String paymentThrough;
-	@NotNull(message = "{order.dateofdelivery.absent}")
-	@Future(message = "{order.dateofdelivery.invalid}")
 	private LocalDateTime dateOfDelivery;
 	private String deliveryAddress;
 

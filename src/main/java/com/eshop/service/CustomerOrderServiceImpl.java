@@ -1,5 +1,6 @@
 package com.eshop.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 		Order order = new Order();
 		order.setDeliveryAddress(customerDTO.getAddress());
 		order.setCustomerEmailId(orderDTO.getCustomerEmailId());
-		order.setDateOfDelivery(orderDTO.getDateOfDelivery());
+		order.setDateOfDelivery(LocalDateTime.now().plusDays(3));
 		order.setDateOfOrder(LocalDateTime.now());
 		order.setPaymentThrough(PaymentThrough.valueOf(orderDTO.getPaymentThrough()));
 
@@ -90,7 +91,6 @@ public class CustomerOrderServiceImpl implements CustomerOrderService {
 		orderDTO.setCustomerEmailId(order.getCustomerEmailId());
 		orderDTO.setDateOfDelivery(order.getDateOfDelivery());
 		orderDTO.setDateOfOrder(order.getDateOfOrder());
-		orderDTO.setPaymentThrough(order.getPaymentThrough().toString());
 		orderDTO.setTotalPrice(order.getTotalPrice());
 		orderDTO.setOrderStatus(order.getOrderStatus().toString());
 		orderDTO.setDiscount(order.getDiscount());

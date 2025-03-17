@@ -14,7 +14,7 @@ public class LoggingAspect {
 
 	@AfterThrowing(pointcut = "execution(* com.eshop.service.*Impl.*(..))", throwing = "exception")
 	public void logExceptionFromService(Exception exception) {
-		logger.error(exception.getMessage(), exception);
+		logger.error(exception.getMessage());
 	}
 
 }
