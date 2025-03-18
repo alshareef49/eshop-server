@@ -4,25 +4,25 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class OrderAPITest {
+class PaymentAPITest {
 
     @Test
-    void placeOrder() {
+    void addNewCard() {
     }
 
     @Test
-    void getOrderDetails() {
+    void updateCustomerCard() {
     }
 
     @Test
-    void getOrdersOfCustomer() {
+    void deleteCustomerCard() {
     }
 
     @Test
-    void updateOrderAfterPayment() {
+    void getCardsOfCustomer() {
     }
 
     @Test
-    void updatePaymentOption() {
+    void payForOrder() {
     }
 }

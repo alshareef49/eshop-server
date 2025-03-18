@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 
-@SpringBootApplication(scanBasePackages = { "com.eshop" })
+@SpringBootApplication
 @PropertySource(value = { "classpath:messages.properties" })
 public class EShopApplication {
 

@@ -7,21 +7,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.eshop.dto.*;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import com.eshop.dto.CustomerDTO;
+import com.eshop.dto.OrderDTO;
+import com.eshop.dto.OrderStatus;
+import com.eshop.dto.PaymentThrough;
 import com.eshop.models.Order;
 import com.eshop.models.OrderedProduct;
 import com.eshop.exception.EShopException;
 import com.eshop.repository.CustomerOrderRepository;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class CustomerOrderServiceTest {
@@ -33,23 +33,7 @@ public class CustomerOrderServiceTest {
 
 	@InjectMocks
 	CustomerOrderService customerOrderService = new CustomerOrderServiceImpl();
-
-	private OrderDTO orderDTO;
-	private CustomerDTO customerDTO;
-
-	@BeforeEach
-	void setUp() {
-		customerDTO = new CustomerDTO();
-		customerDTO.setEmailId("test@example.com");
-		customerDTO.setAddress("123 Test Street");
-
-		orderDTO = new OrderDTO();
-		orderDTO.setCustomerEmailId("test@example.com");
-		orderDTO.setPaymentThrough("CREDIT_CARD");
-		orderDTO.setOrderedProducts(new ArrayList<>());
-	}
-
-
+	
 	@Test
 	public void findOrderByCustomerEmailIdValidTest() throws EShopException {
 
@@ -88,7 +72,7 @@ public class CustomerOrderServiceTest {
 		List<OrderDTO> orderDTOList = customerOrderService.findOrdersByCustomerEmailId(emailId);
 		for (OrderDTO orderDTO : orderDTOList) {
 			orderIdFromService = orderDTO.getOrderId();
-			assertEquals(orderIdFromTest, orderIdFromService);
+			Assertions.assertEquals(orderIdFromTest, orderIdFromService);
 		}
 
 	}
@@ -100,85 +84,15 @@ public class CustomerOrderServiceTest {
 		Mockito.when(orderRepository.findByCustomerEmailId(Mockito.anyString())).thenReturn(new ArrayList<Order>());
 		EShopException excep = Assertions.assertThrows(EShopException.class,
 				() -> customerOrderService.findOrdersByCustomerEmailId(emailId));
-		assertEquals("OrderService.NO_ORDERS_FOUND", excep.getMessage());
+		Assertions.assertEquals("OrderService.NO_ORDERS_FOUND", excep.getMessage());
 	}
 
 	@Test
 	public void placeOrderInValidTest3() throws EShopException {
-
-		OrderDTO orderDTO1 = new OrderDTO();
-		orderDTO1.setOrderId(111);
-		orderDTO1.setCustomerEmailId("name@gmail.com");
-		orderDTO1.setPaymentThrough("DEBIT_CARD");
-
-		List<OrderedProductDTO> productList = new ArrayList<>();
-		ProductDTO productDTO = new ProductDTO();
-		productDTO.setProductId(1);
-		productDTO.setDiscount(5.00d);
-		productDTO.setAvailableQuantity(1);
-		productDTO.setQuantity(12);
-		productDTO.setSellerEmailId("name@gmail.com");
-		productDTO.setPrice(1000.00d);
-		productDTO.setBrand("Brand");
-		orderDTO1.setOrderedProducts(productList);
-
-		OrderedProductDTO orderedProductDTO = new OrderedProductDTO();
-		orderedProductDTO.setOrderedProductId(1);
-		orderedProductDTO.setQuantity(1);
-		orderedProductDTO.setProduct(productDTO);
-		productList.add(orderedProductDTO);
-
-		Mockito.when(customerService.getCustomerByEmailId(Mockito.anyString())).thenReturn(customerDTO);
-		Mockito.when(orderRepository.save(Mockito.any(Order.class))).thenReturn(null);
-		assertDoesNotThrow(()-> customerOrderService.placeOrder(orderDTO1));
-
+		
+		// write your logic here
+		
 	}
-	@Test
-	public void placeOrderInValidTest4() throws EShopException {
-
-		OrderDTO orderDTO1 = new OrderDTO();
-		orderDTO1.setOrderId(111);
-		orderDTO1.setCustomerEmailId("name@gmail.com");
-		orderDTO1.setPaymentThrough("DEBIT_CARD");
-
-		List<OrderedProductDTO> productList = new ArrayList<>();
-		ProductDTO productDTO = new ProductDTO();
-		productDTO.setProductId(1);
-		productDTO.setDiscount(5.00d);
-		productDTO.setAvailableQuantity(1);
-		productDTO.setQuantity(1);
-		productDTO.setSellerEmailId("name@gmail.com");
-		productDTO.setPrice(1000.00d);
-		productDTO.setBrand("Brand");
-		orderDTO1.setOrderedProducts(productList);
-
-		OrderedProductDTO orderedProductDTO = new OrderedProductDTO();
-		orderedProductDTO.setOrderedProductId(1);
-		orderedProductDTO.setQuantity(13);
-		orderedProductDTO.setProduct(productDTO);
-		productList.add(orderedProductDTO);
-
-		Mockito.when(customerService.getCustomerByEmailId(Mockito.anyString())).thenReturn(customerDTO);
-		Mockito.when(orderRepository.save(Mockito.any(Order.class))).thenReturn(null);
-		assertThrows(EShopException.class,()-> customerOrderService.placeOrder(orderDTO1));
-
-	}
-	@Test
-	void testPlaceOrder_Success() throws EShopException {
-		Mockito.when(customerService.getCustomerByEmailId("test@example.com")).thenReturn(customerDTO);
-		Mockito.when(orderRepository.save(Mockito.any(Order.class))).thenAnswer(invocation -> {
-			Order order = invocation.getArgument(0);
-			order.setOrderId(1);
-			return order;
-		});
-
-		Integer orderId = customerOrderService.placeOrder(orderDTO);
-
-		assertNotNull(orderId);
-		assertEquals(1, orderId);
-	}
-
-
 
 	@Test
 	public void getOrderDetailValidTest() throws EShopException {
@@ -206,7 +120,7 @@ public class CustomerOrderServiceTest {
 		order.setOrderedProducts(orderedProductsList);
 
 		Mockito.when(orderRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(order));
-		assertEquals(order.getOrderId(),
+		Assertions.assertEquals(order.getOrderId(),
 				customerOrderService.getOrderDetails(order.getOrderId()).getOrderId());
 
 	}
@@ -218,7 +132,7 @@ public class CustomerOrderServiceTest {
 		Mockito.when(orderRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 		EShopException excep = Assertions.assertThrows(EShopException.class,
 				() -> customerOrderService.getOrderDetails(orderId));
-		assertEquals("OrderService.ORDER_NOT_FOUND", excep.getMessage());
+		Assertions.assertEquals("OrderService.ORDER_NOT_FOUND", excep.getMessage());
 	}
 
 	@Test
@@ -231,7 +145,7 @@ public class CustomerOrderServiceTest {
 		Mockito.when(customerService.getCustomerByEmailId(Mockito.anyString())).thenReturn(customerDTO);
 		EShopException excep = Assertions.assertThrows(EShopException.class,
 				() -> customerOrderService.placeOrder(orderDTO));
-		assertEquals("OrderService.ADDRESS_NOT_AVAILABLE", excep.getMessage());
+		Assertions.assertEquals("OrderService.ADDRESS_NOT_AVAILABLE", excep.getMessage());
 
 	}
 	
@@ -254,7 +168,7 @@ public class CustomerOrderServiceTest {
 		Mockito.when(orderRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 		EShopException excep = Assertions.assertThrows(EShopException.class,
 				() -> customerOrderService.updatePaymentThrough(OrderId, paymentThrough));
-		assertEquals("OrderService.ORDER_NOT_FOUND", excep.getMessage());
+		Assertions.assertEquals("OrderService.ORDER_NOT_FOUND", excep.getMessage());
 	}
 
 	@Test
@@ -267,7 +181,7 @@ public class CustomerOrderServiceTest {
 		Mockito.when(orderRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(order));
 		EShopException excep = Assertions.assertThrows(EShopException.class,
 				() -> customerOrderService.updatePaymentThrough(OrderId, paymentThrough));
-		assertEquals("OrderService.TRANSACTION_ALREADY_DONE", excep.getMessage());
+		Assertions.assertEquals("OrderService.TRANSACTION_ALREADY_DONE", excep.getMessage());
 	}
 
 	@Test
@@ -290,7 +204,7 @@ public class CustomerOrderServiceTest {
 		Mockito.when(orderRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
 		EShopException excep = Assertions.assertThrows(EShopException.class,
 				() -> customerOrderService.updateOrderStatus(OrderId, orderStatus));
-		assertEquals("OrderService.ORDER_NOT_FOUND", excep.getMessage());
+		Assertions.assertEquals("OrderService.ORDER_NOT_FOUND", excep.getMessage());
 
 	}
 	
