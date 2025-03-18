@@ -20,7 +20,6 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer transactionId;
 	private Integer orderId;
-	private Integer cardId;
 	private Double totalPrice;
 	private LocalDateTime transactionDate;
 	@Enumerated(EnumType.STRING)
