@@ -26,7 +26,7 @@ The backend is built using Spring Boot.
    ```json
    {
      "customerEmailId": "user@example.com",
-     cartProducts": [
+     "cartProducts": [
         {
             "product": {
                 "productId": 1000
