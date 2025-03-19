@@ -26,12 +26,14 @@ The backend is built using Spring Boot.
    ```json
    {
      "customerEmailId": "user@example.com",
-     "cartProducts": [
-       {
-         "productId": 1001,
-         "quantity": 2
-       }
-     ]
+     cartProducts": [
+        {
+            "product": {
+                "productId": 1000
+            },
+            "quantity": 1
+        }
+    ]
    }
 2. **Place Order:**
   - Endpoint: POST /order-api/place-order
