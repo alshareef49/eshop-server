@@ -1,2 +1,4 @@
 # eshop-server
-## DB diagram:- https://dbdiagram.io/d/EShop-67ceaf81263d6cf9a0d2636e
+## Database Schema
+![image](https://github.com/user-attachments/assets/57d3c39a-2880-41c7-9b8e-990b6c3969fe)
+
