@@ -2,6 +2,7 @@ package com.eshop.controller;
 
 import com.eshop.config.AuthCodeConfig;
 import com.eshop.models.Customer;
+import com.eshop.models.Role;
 import com.eshop.repository.CustomerRepository;
 import com.eshop.service.CustomUserDetailsService;
 import com.eshop.utility.JWTUtils;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -78,7 +80,9 @@ public class GoogleAuthController {
                     customer.setName(email);
                     customer.setPhoneNumber("");
                     customer.setAddress("");
-                    customer.setRole("ROLE_USER");
+                    Role role = new Role();
+                    role.setRoleName("USER");
+                    customer.setRoles(List.of(role));
                     customer.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
                     customerRepository.save(customer);
                     userDetails = userDetailsService.loadUserByUsername(email);

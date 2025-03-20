@@ -11,4 +11,8 @@ public interface CustomerProductService {
 	ProductDTO getProductById(Integer productId) throws EShopException;
 
 	void reduceAvailableQuantity(Integer productId, Integer quantity) throws EShopException;
+
+	void addProduct(ProductDTO productDTO) throws EShopException;
+
+	void deleteProduct(Integer productId) throws EShopException;
 }

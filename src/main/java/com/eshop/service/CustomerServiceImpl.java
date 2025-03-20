@@ -1,11 +1,14 @@
 package com.eshop.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.eshop.dto.CustomerDTO;
 import com.eshop.models.Customer;
 import com.eshop.exception.EShopException;
+import com.eshop.models.Role;
 import com.eshop.repository.CustomerRepository;
+import com.eshop.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +20,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private CustomerRepository customerRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
 
 	@Override
 	public CustomerDTO authenticateCustomer(String emailId, String password) throws EShopException {
@@ -52,7 +58,15 @@ public class CustomerServiceImpl implements CustomerService {
 				customer.setPassword((new BCryptPasswordEncoder()).encode(customerDTO.getPassword()));
 				customer.setPhoneNumber(customerDTO.getPhoneNumber());
 				customer.setAddress(customerDTO.getAddress());
-				customer.setRole("ROLE_USER");
+
+				Role userRole = roleRepository.findByRoleName("USER")
+						.orElseGet(() -> {
+							Role newRole = new Role();
+							newRole.setRoleName("USER");
+							return roleRepository.save(newRole);
+						});
+
+				customer.setRoles(List.of(userRole));
 				customerRepository.save(customer);
 				registeredWithEmailId = customer.getEmailId();
 			} else {
@@ -111,5 +125,36 @@ public class CustomerServiceImpl implements CustomerService {
 		customer.setPhoneNumber(phoneNumber);
 		customerRepository.save(customer);
 	}
+
+	@Override
+	public void saveAdmin(CustomerDTO customerDTO) throws EShopException {
+		Role userRole = roleRepository.findByRoleName("USER")
+				.orElseGet(() -> {
+					Role newRole = new Role();
+					newRole.setRoleName("USER");
+					return roleRepository.save(newRole);
+				});
+		Role adminRole = roleRepository.findByRoleName("ADMIN")
+				.orElseGet(() -> {
+					Role newRole = new Role();
+					newRole.setRoleName("ADMIN");
+					return roleRepository.save(newRole);
+				});
+
+		Customer customer = new Customer();
+		customer.setEmailId(customerDTO.getEmailId().toLowerCase());
+		customer.setName(customerDTO.getName());
+		customer.setPhoneNumber(customerDTO.getPhoneNumber());
+		customer.setAddress(customerDTO.getAddress());
+		customer.setRoles(List.of(userRole, adminRole));
+		customer.setPassword((new BCryptPasswordEncoder()).encode(customerDTO.getPassword()));
+		customerRepository.save(customer);
+	}
+
+	@Override
+	public List<Customer> getAllCustomers() throws EShopException {
+        return (List<Customer>) customerRepository.findAll();
+	}
+
 
 }

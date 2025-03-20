@@ -1,6 +1,6 @@
 package com.eshop.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -13,22 +13,18 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "CUSTOMER")
-public class Customer {
+public class Role {
     @Id
-    private String emailId;
-    private String name;
-    private String password;
-    private String phoneNumber;
-    private String address;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "CUSTOMER_ROLES",
-            joinColumns = @JoinColumn(name = "CUSTOMER_EMAIL"),
-            inverseJoinColumns = @JoinColumn(name = "ROLE_ID")
-    )
-    @JsonManagedReference
-    private List<Role> roles;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String roleName;
+
+    @ManyToMany(mappedBy = "roles")
+    @ToString.Exclude
+    @JsonBackReference
+    private List<Customer> customers;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -36,8 +32,8 @@ public class Customer {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        Customer customer = (Customer) o;
-        return getEmailId() != null && Objects.equals(getEmailId(), customer.getEmailId());
+        Role role = (Role) o;
+        return getId() != null && Objects.equals(getId(), role.getId());
     }
 
     @Override

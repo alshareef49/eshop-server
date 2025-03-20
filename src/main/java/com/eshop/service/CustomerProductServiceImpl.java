@@ -64,4 +64,25 @@ public class CustomerProductServiceImpl implements CustomerProductService {
 		Product product = productOp.orElseThrow(() -> new EShopException("ProductService.PRODUCT_NOT_AVAILABLE"));
 		product.setAvailableQuantity(product.getAvailableQuantity() - quantity);
 	}
+
+	@Override
+	public void addProduct(ProductDTO productDTO) throws EShopException {
+		Product product = new Product();
+		product.setBrand(productDTO.getBrand());
+		product.setCategory(productDTO.getCategory());
+		product.setDescription(productDTO.getDescription());
+		product.setName(productDTO.getName());
+		product.setPrice(productDTO.getPrice());
+		product.setAvailableQuantity(productDTO.getAvailableQuantity());
+		productRepository.save(product);
+	}
+
+	@Override
+	public void deleteProduct(Integer productId) throws EShopException {
+		Optional<Product> productOp = productRepository.findById(productId);
+		Product product = productOp.orElseThrow(() -> new EShopException("ProductService.PRODUCT_NOT_AVAILABLE"));
+		productRepository.delete(product);
+	}
+
+
 }

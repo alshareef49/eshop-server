@@ -52,4 +52,19 @@ public class ProductAPI {
 		return new ResponseEntity<>(environment.getProperty("ProductAPI.REDUCE_QUANTITY_SUCCESSFULL"), HttpStatus.OK);
 
 	}
+
+	@PostMapping(value = "/add-product")
+	public ResponseEntity<String> addProduct(@RequestBody ProductDTO productDTO) throws EShopException {
+		logger.info("Received a request to add a new product");
+		customerProductService.addProduct(productDTO);
+		return new ResponseEntity<>(environment.getProperty("ProductAPI.ADD_PRODUCT_SUCCESSFULL"), HttpStatus.OK);
+	}
+
+	@DeleteMapping(value = "/delete/{productId}")
+	public ResponseEntity<String> deleteProduct(@PathVariable Integer productId) throws EShopException {
+		logger.info("Received a request to delete a product");
+		customerProductService.deleteProduct(productId);
+		return new ResponseEntity<>(environment.getProperty("ProductAPI.DELETE_PRODUCT_SUCCESSFULL"), HttpStatus.OK);
+	}
+
 }
