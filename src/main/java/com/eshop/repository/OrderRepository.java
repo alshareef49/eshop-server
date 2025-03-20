@@ -6,6 +6,4 @@ import com.eshop.models.Order;
 
 public interface OrderRepository extends CrudRepository<Order, Integer> {
 
-	// add methods if required
-
 }
