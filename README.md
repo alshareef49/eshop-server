@@ -51,5 +51,6 @@ The backend is built using Spring Boot.
 
 
 ## Database Schema
-![image](https://github.com/user-attachments/assets/57d3c39a-2880-41c7-9b8e-990b6c3969fe)
+![image](https://github.com/user-attachments/assets/d26d3bd4-8763-411c-9eb3-0a204493fdcc)
+
 
