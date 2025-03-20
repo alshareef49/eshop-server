@@ -11,10 +11,20 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build and push Docker image to Heroku
+          name: Install Heroku CLI
           command: |
             set -x
             sudo curl https://cli-assets.heroku.com/install.sh | sh
+      - run:
+          name: Set Heroku stack to container
+          command: |
+            HEROKU_API_KEY=${HEROKU_API_KEY} heroku stack:set container -a eshop-server
+      - run:
+          name: Build and push Docker image to Heroku
+          command: |
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a eshop-server web
+      - run:
+          name: Release Docker container on Heroku
+          command: |
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:release -a eshop-server web
