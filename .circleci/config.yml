@@ -11,6 +11,15 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install Maven
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y maven
+      - run:
+          name: Build JAR with Maven
+          command: |
+            mvn clean package -DskipTests
+      - run:
           name: Install Heroku CLI
           command: |
             set -x
@@ -23,6 +32,7 @@ jobs:
           name: Build and push Docker image to Heroku
           command: |
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:login
+            docker build -t web .
             HEROKU_API_KEY=${HEROKU_API_KEY} heroku container:push -a eshop-server web
       - run:
           name: Release Docker container on Heroku
