@@ -1,6 +1,7 @@
 package com.eshop.service;
 
 import com.eshop.models.Customer;
+import com.eshop.models.Role;
 import com.eshop.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,12 +34,14 @@ class CustomUserDetailsServiceTest {
         customer = new Customer();
         customer.setEmailId("test@example.com");
         customer.setPassword("password123");
+        Role role = new Role();
+        role.setRoleName("USER");
+        customer.setRoles(List.of(role));
     }
 
     @Test
     void testLoadUserByUsername_UserExists() {
         when(customerRepository.findById("test@example.com")).thenReturn(Optional.of(customer));
-
         UserDetails userDetails = customUserDetailsService.loadUserByUsername("test@example.com");
 
         assertNotNull(userDetails);
