@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.eshop</groupId>
     <artifactId>EShop_Server</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <name>EShop_Server</name>
     <description>EShop Spring Boot Project</description>
     <properties>
@@ -209,5 +209,6 @@
                 </executions>
             </plugin>
         </plugins>
+        <finalName>eshop-server</finalName>
     </build>
 </project>

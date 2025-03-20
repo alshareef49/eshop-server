@@ -1,0 +1,18 @@
+version: "3"
+services:
+  eshop-app:
+    image: eshop-server:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:3333"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      JAVA_OPTS: -Xms512m -Xmx1024m
+    networks:
+      - eshop-network
+
+networks:
+  eshop-network:
+    driver: bridge
