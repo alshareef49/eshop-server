@@ -32,8 +32,9 @@ public class SecurityConfig {
                                 "/customer-api/customer/**",
                                 "/order-api/**",
                                 "/product-api/product/**",
-                                "/product-api/update/**",
-                                "/payment-api/**").authenticated()
+                                "/payment-api/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin/all-users",
+                                "/product-api/delete/**","/product-api/update/**").hasRole("ADMIN")
                         .anyRequest().permitAll()
                 );
         http.addFilterBefore(authenticationFilterConfig, UsernamePasswordAuthenticationFilter.class);

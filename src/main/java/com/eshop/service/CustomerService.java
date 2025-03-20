@@ -2,7 +2,9 @@ package com.eshop.service;
 
 import com.eshop.dto.CustomerDTO;
 import com.eshop.exception.EShopException;
-import jakarta.validation.constraints.Pattern;
+import com.eshop.models.Customer;
+
+import java.util.List;
 
 public interface CustomerService {
 
@@ -19,4 +21,7 @@ public interface CustomerService {
 	void updatePassword(String customerEmailId, String newPassword) throws EShopException;
 
 	void updatePhoneNumber(String customerEmailId, String phoneNumber) throws EShopException;
+	void saveAdmin(CustomerDTO customer) throws EShopException;
+
+	List<Customer> getAllCustomers() throws EShopException;
 }
