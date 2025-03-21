@@ -31,7 +31,6 @@ public class SecurityConfig {
                         .requestMatchers("/cart-api/**",
                                 "/customer-api/customer/**",
                                 "/order-api/**",
-                                "/product-api/product/**",
                                 "/payment-api/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/admin/all-users",
                                 "/product-api/delete/**",
