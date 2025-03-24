@@ -1,24 +1,37 @@
-# Use OpenJDK 21 as the base image
-FROM openjdk:21-jdk-slim
+# Stage 1: Build JAR using Maven
+FROM maven:3.9.6-eclipse-temurin-21 as builder
 
-# Set environment variables
-ENV APP_HOME=/app
-WORKDIR $APP_HOME
+# Set working directory
+WORKDIR /app
 
-# Add a non-root user
+# Copy pom.xml and download dependencies
+COPY pom.xml /app/
+RUN mvn -B dependency:go-offline
+
+# Copy the source code and build the application
+COPY src /app/src
+RUN mvn -B clean package -DskipTests
+
+# Stage 2: Create a minimal image to run the application
+FROM eclipse-temurin:21-jdk-slim
+
+# Set working directory
+WORKDIR /app
+
+# Add a non-root user for security
 RUN groupadd -g 10014 spring && useradd -m -u 10014 -g spring spring
 
-# Copy the JAR file into the container
-COPY target/*.jar eshop-server.jar
+# Copy JAR from the builder stage
+COPY --from=builder /app/target/*.jar /app/eshop-server.jar
 
 # Change ownership of the application to the new user
-RUN chown -R spring:spring $APP_HOME
+RUN chown -R spring:spring /app
 
-# Switch to the non-root user
+# Switch to non-root user
 USER 10014
 
 # Expose the application port
 EXPOSE 8080
 
-# Run the application as the non-root user
-CMD ["java", "-jar", "eshop-server.jar"]
+# Run the application
+CMD ["java", "-jar", "/app/eshop-server.jar"]
