@@ -1,8 +1,14 @@
-FROM openjdk:21
+# Use OpenJDK 21 as the base image
+FROM openjdk:21-jdk-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the built JAR file into the container
+COPY target/*.jar app.jar
+
+# Expose the application port
 EXPOSE 3333
 
-# Copy JAR from target directory to the Docker image
-ADD target/eshop-server.jar eshop-server.jar
-
-# Run the JAR file
-ENTRYPOINT ["java", "-jar", "/eshop-server.jar"]
+# Run the application
+CMD ["java", "-jar", "app.jar"]
