@@ -1,0 +1,41 @@
+name: Deploy to Choreo
+
+on:
+  push:
+    tags:
+      - 'v*'  # Trigger the pipeline only for version tags (v1.0, v1.1, etc.)
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build Application
+        run: |
+          mvn clean package -DskipTests
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+
+      - name: Build and Push Docker Image
+        run: |
+          TAG_NAME=$(echo ${GITHUB_REF#refs/tags/})
+          IMAGE_NAME=your-dockerhub-username/your-app-name:$TAG_NAME
+          docker build -t $IMAGE_NAME .
+          docker push $IMAGE_NAME
+
+      - name: Trigger Choreo Deployment
+        run: |
+          curl -X POST "https://api.choreo.dev/apis/your-project-id/deploy" \
+            -H "Authorization: Bearer ${{ secrets.CHOREO_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{"image":"your-dockerhub-username/your-app-name:'"$TAG_NAME"'"}'
