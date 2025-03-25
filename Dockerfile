@@ -31,7 +31,7 @@ RUN chown -R spring:spring /app
 USER 10014
 
 # Expose the application port
-EXPOSE 3333
+EXPOSE 8080
 
 # Run the application
 CMD ["java", "-jar", "/app/eshop-server.jar"]
