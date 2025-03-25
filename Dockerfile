@@ -1,5 +1,5 @@
 # Stage 1: Build JAR using Maven
-FROM maven:3.9.6-eclipse-temurin-21 as builder
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 
 # Set working directory
 WORKDIR /app
@@ -13,7 +13,7 @@ COPY src /app/src
 RUN mvn -B clean package -DskipTests
 
 # Stage 2: Create a minimal image to run the application
-FROM eclipse-temurin:21-jdk-slim
+FROM openjdk:21
 
 # Set working directory
 WORKDIR /app
@@ -21,7 +21,7 @@ WORKDIR /app
 # Add a non-root user for security
 RUN groupadd -g 10014 spring && useradd -m -u 10014 -g spring spring
 
-# Copy JAR from the builder stage
+# ✅ Correctly reference the builder stage
 COPY --from=builder /app/target/*.jar /app/eshop-server.jar
 
 # Change ownership of the application to the new user
@@ -31,7 +31,7 @@ RUN chown -R spring:spring /app
 USER 10014
 
 # Expose the application port
-EXPOSE 8080
+EXPOSE 3333
 
 # Run the application
 CMD ["java", "-jar", "/app/eshop-server.jar"]
