@@ -35,7 +35,7 @@ jobs:
 
       - name: Trigger Choreo Deployment
         run: |
-          curl -X POST "https://api.choreo.dev/apis/eshop-server/deploy" \
+          curl -X POST "https://api.choreo.dev/service/eshop-server/deploy" \
             -H "Authorization: Bearer ${{ secrets.CHOREO_API_KEY }}" \
             -H "Content-Type: application/json" \
             -d '{"image":"alshareef39/eshop-server:'"$TAG_NAME"'"}'
